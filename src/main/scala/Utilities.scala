@@ -1,6 +1,7 @@
 object Utilities extends App {
 
-  def englishWords(file: String = "englishWords.txt") : List[String] = {
+  // got the words here: http://www.gwicks.net/dictionaries.htm (UK English)
+  def englishWords(file: String = "./src/Resources/englishWords.txt") : List[String] = {
     val source = io.Source.fromFile(file)
     val words: List[String] = source.getLines.toList
     source.close()
