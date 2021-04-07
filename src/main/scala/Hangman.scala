@@ -1,12 +1,10 @@
 import scala.io.StdIn.readLine
 
 object Hangman extends App {
-println("Welcome to the word guessing game, i.e. Hangman. " +
+println("Welcome to the word guessing game - Hangman. " +
   "You have 10 guesses. " +
   "Good luck!")
   // FIXME MAKE IT SO ALL THE TEXT APPEARS IN A NEW LINE. As now it is still in in one line
-
-  //FIXME readline to enter the guess?
 
   //TODO maybe add an option to guess in different languages?
   val file_path = if (args.isEmpty) "./src/Resources/englishWords.txt" else args(0)
@@ -21,7 +19,7 @@ println("Welcome to the word guessing game, i.e. Hangman. " +
     println("Type 'Exit' to leave the game, 'New' for a new game!")
 
     val guessingWord = Utilities.randomWord(guessWords)
-    var splitWord = Utilities.wordSplit("_" * guessingWord.toUpperCase.length)
+    var splitWord = Utilities.wordSplit("_" * guessingWord.toUpperCase.length) // FIXme have to split into two different variables
     var guessSet : Set[Char] = Set()
     var guessCount = 10
 
@@ -50,12 +48,12 @@ println("Welcome to the word guessing game, i.e. Hangman. " +
           }
         }
       }
-      val playersInput = readLine((s"You have $guessCount left: %2d . Letter: ").format(Utilities.wordJoin(splitWord), guessCount)).toUpperCase
+      val playersInput = readLine(s"You have $guessCount left: %2d . Letter: ".format(Utilities.wordJoin(splitWord), guessCount)).toUpperCase
       playersInput match {
         case "NEW GAME" | "NEW" => guessCount = 1 ; countGuesses()  //todo check if it going to work only by pressing NEW
         case "EXIT" => endGame = true
         case "" | " " => Nil
-        case _ => {
+        case _ =>
           val letter : List[Char] = playersInput.toList //todo check if need to add utilities before
           if ((1 < letter.length) || !Utilities.alphaSet.contains(letter.head)) {
             println("It is not a valid guess ->" + playersInput)
@@ -69,7 +67,6 @@ println("Welcome to the word guessing game, i.e. Hangman. " +
             guessSet = guessSet + letter.head
             countGuesses()
           }
-        }
       }
     }
   }
