@@ -12,7 +12,6 @@ object Utilities extends App {
   def randomWord(words : List[String]) : String = {
     words( scala.util.Random.nextInt(words.length) )
   }
-  // TODO ADD A SEED FOR TESTING
 
   // Split a word into separate letters
   def wordSplit(word : String) : List[Char] = {
@@ -26,8 +25,7 @@ object Utilities extends App {
   }
 
   // Set of upper case letters.
-  // TODO Check if can be done only with the previous def comment
-  def alphaSet : Set[Char] = {
+   def alphaSet : Set[Char] = {
     ('A' to 'Z').toSet
   }
 

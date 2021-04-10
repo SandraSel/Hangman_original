@@ -4,37 +4,43 @@ object Hangman extends App {
 println("Welcome to the word guessing game - Hangman. " +
   "You have 10 guesses. " +
   "Good luck!")
-  // FIXME MAKE IT SO ALL THE TEXT APPEARS IN A NEW LINE. As now it is still in in one line
 
-  //TODO maybe add an option to guess in different languages?
+
+
   val file_path = if (args.isEmpty) "./src/Resources/englishWords.txt" else args(0)
   var guessWords = Utilities.englishWords(file_path)
 
-  //println(guessWords)
+  //TODO maybe put them in a class?
+  val letters: Set[Char] = Utilities.alphaSet
+  val formattedPlayerInput = "\t%s [Guesses Left: %2d ] Letter: "
+  val summary = "%s Wins : %2d  Losses : %2d"
+
   var endGame = false
   var win = 0
   var loss = 0
 
   while (!endGame){
-    println("Type 'Exit' to leave the game, 'New' for a new game!")
+    readLine("Type 'Exit' to leave the game, 'New' for a new game!")
 
     val guessingWord = Utilities.randomWord(guessWords)
-    var splitWord = Utilities.wordSplit("_" * guessingWord.toUpperCase.length) // FIXme have to split into two different variables
+    guessWords = guessWords.filterNot(_ == guessingWord)
+    val splitWord = Utilities.wordSplit(guessingWord.toUpperCase)
+    var wordUnderscoreGuess = Utilities.wordSplit("_" * guessingWord.length) //shows the length of the word with underscores
     var guessSet : Set[Char] = Set()
     var guessCount = 10
 
     var newGame = false
-    while (!endGame && !newGame){
-      def countGuesses(): Unit = {
+    while (!newGame && !endGame){
+      def checkGuesses(): Unit = {
 
         def printResult(message : String): Unit = {
           println("\t" + Utilities.wordJoin(splitWord) + "\n")
-          println("Wins: %2d  Losses: %2d".format(message, win, loss)) //https://docs.scala-lang.org/overviews/core/string-interpolation.html
+          println(summary.format(message, win, loss)) //https://docs.scala-lang.org/overviews/core/string-interpolation.html
           //https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Formatter.html#detail
           //https://alvinalexander.com/scala/scala-string-formatting-java-string-format-method/
         }
   // if the player guesses the word correctly then if versions, else looses a move
-        if (splitWord == guessingWord) {
+        if (splitWord == wordUnderscoreGuess) {
           newGame = true
           win += 1
           printResult("Congratulations! You won!")
@@ -48,24 +54,25 @@ println("Welcome to the word guessing game - Hangman. " +
           }
         }
       }
-      val playersInput = readLine(s"You have $guessCount left: %2d . Letter: ".format(Utilities.wordJoin(splitWord), guessCount)).toUpperCase
+
+      val playersInput = readLine(formattedPlayerInput.format(Utilities.wordJoin(wordUnderscoreGuess), guessCount)).toUpperCase
       playersInput match {
-        case "NEW GAME" | "NEW" => guessCount = 1 ; countGuesses()  //todo check if it going to work only by pressing NEW
+        case "NEW" => guessCount = 1 ; checkGuesses()
         case "EXIT" => endGame = true
-        case "" | " " => Nil
+        case "" => Nil
         case _ =>
-          val letter : List[Char] = playersInput.toList //todo check if need to add utilities before
-          if ((1 < letter.length) || !Utilities.alphaSet.contains(letter.head)) {
+          val letter : List[Char] = playersInput.toList
+          if ((1 < letter.length) || !letters.contains(letter.head)) {
             println("It is not a valid guess ->" + playersInput)
           } else if (guessSet.contains(letter.head)) {
             println ("You already guessed this! Try again!")
           } else {
             if (splitWord.contains(letter.head)) {
-              splitWord = Utilities.applyGuess(letter.head, splitWord, splitWord) //TODO have to split splitWord into two parts?
+              wordUnderscoreGuess = Utilities.applyGuess(letter.head, wordUnderscoreGuess, splitWord)
               guessCount += 1
             }
             guessSet = guessSet + letter.head
-            countGuesses()
+            checkGuesses()
           }
       }
     }
