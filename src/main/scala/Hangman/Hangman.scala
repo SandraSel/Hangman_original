@@ -17,14 +17,12 @@ object Hangman extends App {
   while (!state.end) {
 
     println("Type 'Exit' to leave the game, 'New' for a new game!")
-    
+
 
     val guessingWord = Utilities.randomWord(guessWords)
     guessWords = guessWords.filterNot(_ == guessingWord)
     val splitWord = Utilities.wordSplit(guessingWord.toUpperCase)
     var wordUnderscoreGuess = Utilities.wordSplit("_" * guessingWord.length) //shows the length of the word with underscores
-    var guessSet: Set[Char] = Set()
-    var guessCount = 10
 
     var newGame = false
     while (!newGame && !state.end) {
@@ -42,33 +40,33 @@ object Hangman extends App {
           state.wins += 1
           printResult("Congratulations! You won!")
         } else {
-          guessCount match {
+          state.guessCount match {
             case 1 =>
               newGame = true
               state.losses += 1
               printResult("Sorry, but try again! ;)")
-            case _ => guessCount -= 1
+            case _ => state.guessCount -= 1
           }
         }
       }
 
-      val playersInput = readLine(state.formattedInput.format(Utilities.wordJoin(wordUnderscoreGuess), guessCount)).toUpperCase
+      val playersInput = readLine(state.formattedInput.format(Utilities.wordJoin(wordUnderscoreGuess), state.guessCount)).toUpperCase
       playersInput match {
-        case "NEW" => guessCount = 1; checkGuesses()
+        case "NEW" => state.guessCount = 1; checkGuesses()
         case "EXIT" => state.end = true
         case "" => Nil
         case _ =>
           val letter: List[Char] = playersInput.toList
           if ((1 < letter.length) || !state.letters.contains(letter.head)) {
             println("It is not a valid guess ->" + playersInput)
-          } else if (guessSet.contains(letter.head)) {
+          } else if (state.guessSet.contains(letter.head)) {
             println("You already guessed this! Try again!")
           } else {
             if (splitWord.contains(letter.head)) {
               wordUnderscoreGuess = Utilities.applyGuess(letter.head, wordUnderscoreGuess, splitWord)
-              guessCount += 1
+              state.guessCount += 1
             }
-            guessSet = guessSet + letter.head
+            state.guessSet = state.guessSet + letter.head
             checkGuesses()
           }
       }
