@@ -9,9 +9,6 @@ object Hangman extends App {
   val file = if (args.isEmpty) "./src/Resources/englishWords.txt" else args(0)
   var guessWords = Utilities.englishWords(file, Utilities.setDifficulty())
 
-  //guessWords.foreach(println)
-
-  //TODO maybe put them in a class?
   var state = GameState()
 
   while (!state.end) {
