@@ -1,0 +1,16 @@
+package Hangman
+
+case class GameState(letterSet: Set[Char] = Utilities.alphaSet,
+                     formattedPlayerInput: String = "\t%s [Guesses Left: %2d ] Letter: ",
+                     sum: String = "%s Wins : %2d  Losses : %2d",
+                     var endGame: Boolean = false,
+                     var win: Int = 0,
+                     var loss: Int = 0) {
+  val letters: Set[Char] =letterSet
+  val formattedInput: String = formattedPlayerInput
+  val summary: String = sum
+  var end: Boolean = endGame
+  var wins: Int = win
+  var losses: Int = loss
+
+}
